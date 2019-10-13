@@ -2,9 +2,11 @@ package com.sc.coolweather.util;
 
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
 import com.sc.coolweather.db.City;
 import com.sc.coolweather.db.County;
 import com.sc.coolweather.db.Province;
+import com.sc.coolweather.gson.Weather;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -77,5 +79,24 @@ public class Utility {
             }
         }
         return false;
+    }
+
+    /**
+     * 将返回的JSON数据解析成weather实体类
+     * @param response
+     * @return
+     */
+    public static Weather handleWeatherResponse(String response) {
+        try {
+            // 将天气信息的主题内容解析出来
+            JSONObject jsonObject = new JSONObject(response);
+            JSONArray jsonArray = jsonObject.getJSONArray("HeWeather6");
+            String weatherContent = jsonArray.getJSONObject(0).toString();
+            // 将JSON数据转换为weather对象
+            return new Gson().fromJson(weatherContent,Weather.class);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
